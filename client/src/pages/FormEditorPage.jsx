@@ -1,4 +1,4 @@
-import FormEditor from '../components/FormEditor';
+import FormEditor from '../components/FormEditor.jsx';
 
 const FormEditorPage = () => {
   return (

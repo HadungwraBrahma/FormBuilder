@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { DndContext } from "@dnd-kit/core";
-import DraggableItem from "../Dndcommons/DraggableItem";
-import DroppableCategory from "../Dndcommons/DroppableCategory";
+import DraggableItem from "../DndCommons/DraggableItem.jsx";
+import DroppableCategory from "../DndCommons/DroppableCategory.jsx";
 
 const CategorizeFilling = ({ question, response, onResponseUpdate }) => {
   const calculateUnassignedItems = () =>

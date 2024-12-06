@@ -4,9 +4,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import { LoaderIcon } from 'lucide-react';
 
-import ComprehensionFilling from "../components/FormFillings/ComprehensionFilling";
-import CategorizeFilling from "../components/FormFillings/CategorizeFilling";
-import ClozeFilling from "../components/FormFillings/ClozeFilling";
+import ComprehensionFilling from "../components/FormFillings/ComprehensionFilling.jsx";
+import CategorizeFilling from "../components/FormFillings/CategorizeFilling.jsx";
+import ClozeFilling from "../components/FormFillings/ClozeFilling.jsx";
 
 const FormFillingPage = () => {
   const [form, setForm] = useState(null);

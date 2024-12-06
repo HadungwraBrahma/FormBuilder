@@ -5,7 +5,7 @@ import Categorize from './QuestionTypes/Categorize';
 import Cloze from './QuestionTypes/Cloze';
 import Comprehension from './QuestionTypes/Comprehension';
 import { PlusIcon, TrashIcon, LoaderIcon } from 'lucide-react';
-import QuestionTypeSelector from './QuestionTypeSelector';
+import QuestionTypeSelector from './QuestionTypeSelector.jsx';
 
 const FormEditor = () => {
   const [formTitle, setFormTitle] = useState('');

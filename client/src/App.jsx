@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import FormEditorPage from './pages/FormEditorPage';
-import FormFillPage from './pages/FormFillPage';
-import HomePage from './pages/HomePage';
-import { FormProvider } from './context/FormContext';
-import SubmissionConfirmationPage from './pages/SubmissionConfirmationPage';
+import FormEditorPage from './pages/FormEditorPage.jsx';
+import FormFillPage from './pages/FormFillPage.jsx';
+import HomePage from './pages/HomePage.jsx';
+import { FormProvider } from './context/FormContext.jsx';
+import SubmissionConfirmationPage from './pages/SubmissionConfirmationPage.jsx';
 
 function App() {
   return (
