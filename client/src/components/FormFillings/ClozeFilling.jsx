@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { DndContext } from "@dnd-kit/core";
-import DraggableItem from "../Dndcommons/DraggableItem";
-import DroppableBlank from "../Dndcommons/DroppableBlank";
+import DraggableItem from "../DndCommons/DraggableItem";
+import DroppableBlank from "../DndCommons/DroppableBlank";
 
 const ClozeFilling = ({ question, response, onResponseUpdate }) => {
   const paragraphParts =
