@@ -27,7 +27,7 @@ app.use(errorHandler);
    Once the application is deployed on a paid or persistent server that doesn't shut down due to inactivity, 
    this API can be removed. ^_^ */ 
 app.get("/api/wakingup", (req, res) =>{
-  res.json("Server has woke up.")
+  res.status(200).json("Server has woke up.")
 })
 
 const PORT = process.env.PORT || 5000;

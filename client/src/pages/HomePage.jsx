@@ -8,16 +8,21 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const handleCreateFormClick = async () => {
-    setIsLoading(true);
-    /* This API call is use to wakeup the server. Since, its deployed on free servers,
+    try {
+      /* This API call is use to wakeup the server. Since, its deployed on free servers,
        free server automatically shut down after a period of inactivity, this API helps mitigate that issue. 
        Once the application is deployed on a paid or persistent server that doesn't shut down due to inactivity, 
        this API call can be removed. ^_^ */
-    const res = await axiosInstance.get("/api/wakingup");
-    if (res) {
-      setIsLoading(false);
-      navigate("/editor");
+      const res = await axiosInstance.get("/api/wakingup");
+      console.log(res);
+      if (res.status === 200) {
+        setIsLoading(false);
+        navigate("/editor");
+      }
+    } catch (err) {
+      console.log(err);
     }
+    setIsLoading(true);
   };
 
   return (
