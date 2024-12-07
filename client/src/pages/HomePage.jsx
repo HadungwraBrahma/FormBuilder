@@ -8,6 +8,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const handleCreateFormClick = async () => {
+    setIsLoading(true);
     try {
       /* This API call is use to wakeup the server. Since, its deployed on free servers,
        free server automatically shut down after a period of inactivity, this API helps mitigate that issue. 
@@ -22,7 +23,6 @@ const HomePage = () => {
     } catch (err) {
       console.log(err);
     }
-    setIsLoading(true);
   };
 
   return (
