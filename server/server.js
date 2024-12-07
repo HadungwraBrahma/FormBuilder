@@ -22,6 +22,14 @@ app.use("/api/responses", responseRoutes);
 
 app.use(errorHandler);
 
+/* This API is a temporary solution to address the limitations of deploying the website on a free server. 
+   Since free servers automatically shut down after a period of inactivity, this API helps mitigate that issue. 
+   Once the application is deployed on a paid or persistent server that doesn't shut down due to inactivity, 
+   this API can be removed. ^_^ */ 
+app.get("/api/wakingup", (req, res) =>{
+  res.json("Server has woke up.")
+})
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

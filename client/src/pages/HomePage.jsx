@@ -1,14 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2Icon } from "lucide-react";
+import axiosInstance from "../api/axiosInstance";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleCreateFormClick = () => {
+  const handleCreateFormClick = async () => {
     setIsLoading(true);
-    navigate("/editor");
+    /* This API call is use to wakeup the server. Since, its deployed on free servers,
+       free server automatically shut down after a period of inactivity, this API helps mitigate that issue. 
+       Once the application is deployed on a paid or persistent server that doesn't shut down due to inactivity, 
+       this API call can be removed. ^_^ */
+    const res = await axiosInstance.get("/api/wakingup");
+    if (res) {
+      setIsLoading(false);
+      navigate("/editor");
+    }
   };
 
   return (
@@ -23,7 +32,7 @@ const HomePage = () => {
             <br />
             Since, it&apos;s deployed on free server,
             <br />
-            First loading may take some time
+            First loading may take some time (1-2 min)
             <br />
             Please wait...... ^_^
           </p>
