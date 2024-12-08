@@ -51,50 +51,36 @@ const Cloze = ({ onResponseChange, index, question }) => {
       "Complete the sentence by dragging the correct words"
   );
   const [sentence, setSentence] = useState(question.content.sentence || "");
-
-  const [options, setOptions] = useState(() => {
-    const initialBlanks =
-      question.content.blanks?.map((blank, i) => ({
-        id: `blank_${i}`,
-        text: blank,
-        type: "blank",
-      })) || [];
-
-    const initialCustomOptions =
-      question.content.options
-        ?.filter((opt) => !initialBlanks.some((blank) => blank.text === opt))
-        .map((opt, i) => ({
-          id: `option_${i}`,
-          text: opt,
-          type: "custom",
-        })) || [];
-
-    return [...initialBlanks, ...initialCustomOptions];
-  });
-
+  const [options, setOptions] = useState([]);
   const [newOption, setNewOption] = useState("");
-  const [questionImage, setQuestionImage] = useState(
-    question.content.image ? question.content.image : null
-  );
-  const [questionImageUrl, setQuestionImageUrl] = useState(
-    question.content.image ? URL.createObjectURL(question.content.image) : null
-  );
-  const textRef = useRef(null);
+  const [questionImage, setQuestionImage] = useState(null);
+  const [questionImageUrl, setQuestionImageUrl] = useState(null);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
-    let modifiedSentence = sentence;
-    const blankPlaceholders = options
-      .filter((opt) => opt.type === "blank")
-      .map(() => "[BLANK]");
+    const blankOptions = options.filter((opt) => opt.type === "blank");
 
-    options
-      .filter((opt) => opt.type === "blank")
-      .forEach((blank, index) => {
-        modifiedSentence = modifiedSentence.replace(
-          blank.text,
-          blankPlaceholders[index]
-        );
-      });
+    let modifiedSentence = sentence;
+    let blankParts = [];
+    let offset = 0;
+
+    const sortedBlanks = blankOptions.sort(
+      (a, b) => a.selectionStart - b.selectionStart
+    );
+
+    sortedBlanks.forEach((blank) => {
+      const adjustedStart = blank.selectionStart + offset;
+      const adjustedEnd = blank.selectionEnd + offset;
+
+      modifiedSentence =
+        modifiedSentence.slice(0, adjustedStart) +
+        "[BLANK]" +
+        modifiedSentence.slice(adjustedEnd);
+
+      blankParts.push(blank.text);
+
+      offset += "[BLANK]".length - (adjustedEnd - adjustedStart);
+    });
 
     const optionTexts = options.map((opt) => opt.text);
 
@@ -105,7 +91,7 @@ const Cloze = ({ onResponseChange, index, question }) => {
         description,
         image: questionImage || undefined,
         sentence: modifiedSentence,
-        blanks: blankPlaceholders,
+        blanks: blankParts,
         options: optionTexts,
       },
     };
@@ -126,37 +112,57 @@ const Cloze = ({ onResponseChange, index, question }) => {
   };
 
   const handleTextSelection = () => {
-    const selection = window.getSelection();
-    const selectedText = selection.toString().trim();
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end).trim();
 
-    if (selectedText && !options.some((opt) => opt.text === selectedText)) {
-      const newBlank = {
-        id: `blank_${Date.now()}`,
-        text: selectedText,
-        type: "blank",
-      };
-      setOptions([...options, newBlank]);
+    if (selectedText && /\w+/.test(selectedText)) {
+      const existingBlank = options.find(
+        (opt) =>
+          opt.type === "blank" &&
+          opt.text === selectedText &&
+          opt.selectionStart === start
+      );
+
+      if (!existingBlank) {
+        const newBlank = {
+          id: `blank_${Date.now()}`,
+          text: selectedText,
+          type: "blank",
+          selectionStart: start,
+          selectionEnd: end,
+        };
+
+        setOptions((prevOptions) => [...prevOptions, newBlank]);
+      }
     }
   };
 
   const renderSentenceWithBlanks = () => {
-    let modifiedSentence = sentence;
-    options
-      .filter((opt) => opt.type === "blank")
-      .forEach((blank) => {
-        modifiedSentence = modifiedSentence.replace(
-          blank.text,
-          `<span class="bg-yellow-200 px-2 py-1 rounded">${"_____"}</span>`
-        );
-      });
+    const blankOptions = options.filter((opt) => opt.type === "blank");
 
-    return (
-      <div
-        ref={textRef}
-        dangerouslySetInnerHTML={{ __html: modifiedSentence }}
-        className="mb-4 p-2 border rounded"
-      />
+    let modifiedSentence = sentence;
+    let offset = 0;
+
+    const sortedBlanks = blankOptions.sort(
+      (a, b) => a.selectionStart - b.selectionStart
     );
+
+    sortedBlanks.forEach((blank) => {
+      const adjustedStart = blank.selectionStart + offset;
+      const adjustedEnd = blank.selectionEnd + offset;
+
+      const replacement = `_____`;
+      modifiedSentence =
+        modifiedSentence.slice(0, adjustedStart) +
+        replacement +
+        modifiedSentence.slice(adjustedEnd);
+
+      offset += replacement.length - (adjustedEnd - adjustedStart);
+    });
+
+    return <div className="mb-4 p-2 border rounded">{modifiedSentence}</div>;
   };
 
   const handleRemoveOption = (optionToRemove) => {
@@ -268,6 +274,7 @@ const Cloze = ({ onResponseChange, index, question }) => {
       <div className="mb-4">
         <label className="block mb-2 font-semibold">Sentence</label>
         <textarea
+          ref={textareaRef}
           value={sentence}
           onChange={(e) => setSentence(e.target.value)}
           onMouseUp={handleTextSelection}
