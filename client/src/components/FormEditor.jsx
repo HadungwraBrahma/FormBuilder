@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useForm } from '../context/FormContext';
-import { useNavigate } from 'react-router-dom';
-import Categorize from './QuestionTypes/Categorize';
-import Cloze from './QuestionTypes/Cloze';
-import Comprehension from './QuestionTypes/Comprehension';
-import { PlusIcon, TrashIcon, LoaderIcon } from 'lucide-react';
-import QuestionTypeSelector from './QuestionTypeSelector.jsx';
+import { useState, useEffect } from "react";
+import { useForm } from "../context/FormContext";
+import { useNavigate } from "react-router-dom";
+import Categorize from "./QuestionTypes/Categorize";
+import Cloze from "./QuestionTypes/Cloze";
+import Comprehension from "./QuestionTypes/Comprehension";
+import { PlusIcon, TrashIcon, LoaderIcon } from "lucide-react";
+import QuestionTypeSelector from "./QuestionTypeSelector.jsx";
 
 const FormEditor = () => {
-  const [formTitle, setFormTitle] = useState('');
+  const [formTitle, setFormTitle] = useState("");
   const [questions, setQuestions] = useState([]);
-  const [showQuestionTypeSelector, setShowQuestionTypeSelector] = useState(false);
+  const [showQuestionTypeSelector, setShowQuestionTypeSelector] =
+    useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { createForm, setFormQuestions } = useForm();
   const navigate = useNavigate();
@@ -26,50 +27,78 @@ const FormEditor = () => {
       type,
       content: {
         title: `New ${type} Question`,
-        ...(type === 'Categorize' && { 
+        ...(type === "Categorize" && {
           categories: [],
-          items: []
+          items: [],
         }),
-        ...(type === 'Cloze' && { 
-          sentence: '',
-          options: []
+        ...(type === "Cloze" && {
+          sentence: "",
+          options: [],
         }),
-        ...(type === 'Comprehension' && { 
-          passage: '',
-          questions: []
-        })
-      }
+        ...(type === "Comprehension" && {
+          passage: "",
+          questions: [],
+        }),
+      },
     };
 
-    setQuestions([...questions, newQuestion]);
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions, newQuestion];
+      return updatedQuestions.map((question, index) => ({
+        ...question,
+        content: {
+          ...question.content,
+          title: `Question ${index + 1}`,
+        },
+      }));
+    });
   };
 
   useEffect(() => {
-    setFormQuestions(questions);
+    // Safely renumber questions whenever the questions array changes
+    const updatedQuestions = questions.map((question, index) => ({
+      ...question,
+      content: {
+        ...question.content,
+        title: `Question ${index + 1}`,
+      },
+    }));
+
+    setFormQuestions(updatedQuestions);
   }, [questions, setFormQuestions]);
 
   const handleRemoveQuestion = (index) => {
-    const updatedQuestions = questions.filter((_, i) => i !== index);
+    const updatedQuestions = questions
+      .filter((_, i) => i !== index)
+      .map((question, newIndex) => ({
+        ...question,
+        content: {
+          ...question.content,
+          title: `Question ${newIndex + 1}`,
+        },
+      }));
+
     setQuestions(updatedQuestions);
   };
 
+  // Rest of the component remains the same as in the previous example
   const handleSaveForm = async () => {
     if (!formTitle) {
-      alert('Please enter a form title');
+      alert("Please enter a form title");
       return;
     }
 
     try {
       setIsLoading(true);
       const formData = {
-        title: formTitle
+        title: formTitle,
       };
 
       const savedForm = await createForm(formData);
       navigate(`/form/${savedForm._id}`);
     } catch (error) {
-      console.error('Error saving form:', error);
-      alert('Failed to save form');
+      console.error("Error saving form:", error);
+      alert("Failed to save form");
     } finally {
       setIsLoading(false);
     }
@@ -80,15 +109,15 @@ const FormEditor = () => {
       key: index,
       question: question,
       onResponseChange: handleResponseChange,
-      index: index
+      index: index,
     };
 
-    switch(question.type) {
-      case 'Categorize':
+    switch (question.type) {
+      case "Categorize":
         return <Categorize key={questionProps.index} {...questionProps} />;
-      case 'Cloze':
+      case "Cloze":
         return <Cloze {...questionProps} />;
-      case 'Comprehension':
+      case "Comprehension":
         return <Comprehension {...questionProps} />;
       default:
         return null;
@@ -99,11 +128,11 @@ const FormEditor = () => {
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
       <div className="bg-white shadow-md rounded-lg p-6">
         <h1 className="text-2xl font-bold mb-6">Form Builder</h1>
-        
+
         {/* Form Title */}
         <div className="mb-4">
           <label className="block mb-2 font-semibold">Form Title</label>
-          <input 
+          <input
             type="text"
             placeholder="Enter Form Title"
             value={formTitle}
@@ -115,10 +144,10 @@ const FormEditor = () => {
         {/* Questions Section */}
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-4">Questions</h2>
-          
+
           {questions.map((question, index) => (
             <div key={index} className="mb-4 relative">
-              <button 
+              <button
                 onClick={() => handleRemoveQuestion(index)}
                 className="absolute top-2 right-2 text-red-500 hover:bg-red-100 p-2 rounded"
               >
@@ -129,12 +158,12 @@ const FormEditor = () => {
           ))}
 
           {showQuestionTypeSelector ? (
-            <QuestionTypeSelector 
+            <QuestionTypeSelector
               onSelect={handleAddQuestion}
               onClose={() => setShowQuestionTypeSelector(false)}
             />
           ) : (
-            <button 
+            <button
               onClick={() => setShowQuestionTypeSelector(true)}
               className="w-full border-2 border-dashed border-gray-300 p-4 text-center hover:bg-gray-100 transition"
             >
@@ -146,13 +175,13 @@ const FormEditor = () => {
 
         {/* Save Form Button */}
         <div className="mt-6">
-          <button 
+          <button
             onClick={handleSaveForm}
             disabled={isLoading}
             className={`w-full p-3 rounded transition ${
-              isLoading 
-                ? 'bg-blue-300 cursor-not-allowed' 
-                : 'bg-blue-500 text-white hover:bg-blue-600'
+              isLoading
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
             }`}
           >
             {isLoading ? (
@@ -161,7 +190,7 @@ const FormEditor = () => {
                 Saving...
               </div>
             ) : (
-              'Save Form'
+              "Save Form"
             )}
           </button>
         </div>

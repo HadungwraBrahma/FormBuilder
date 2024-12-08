@@ -68,20 +68,11 @@ const DynamicComprehension = ({ onResponseChange, index, question }) => {
       : null
   );
 
-  const [title, setTitle] = useState(
-    question?.content?.title || "Reading Comprehension"
-  );
-  const [description, setDescription] = useState(
-    question?.content?.description ||
-      "Read the passage and answer the questions"
-  );
-
   useEffect(() => {
     const comprehensionContent = {
       type: "Comprehension",
       content: {
-        title,
-        description,
+        title: question.content.title,
         passage,
         image: passageImage || undefined,
         questions: questions.map((q) => ({
@@ -95,7 +86,7 @@ const DynamicComprehension = ({ onResponseChange, index, question }) => {
       onResponseChange(index, comprehensionContent);
     }
     updateFormQuestion(index, comprehensionContent);
-  }, [passage, questions, passageImage, title, description]);
+  }, [passage, questions, passageImage]);
 
   const handlePassageImageUpload = (e) => {
     const file = e.target.files[0];
@@ -181,29 +172,7 @@ const DynamicComprehension = ({ onResponseChange, index, question }) => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Create Comprehension Passage</h2>
-
-      {/* Title and Description */}
-      <div className="mb-4">
-        <label className="block mb-2 font-semibold">Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter comprehension title"
-          className="w-full p-2 border rounded"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block mb-2 font-semibold">Description</label>
-        <input
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter comprehension description"
-          className="w-full p-2 border rounded"
-        />
-      </div>
+      <h3 className="text-lg font-semibold mb-4">{question.content.title}</h3>
 
       {/* Image Upload */}
       <div className="relative mb-6">

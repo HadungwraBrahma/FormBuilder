@@ -43,13 +43,6 @@ const DraggableItem = ({ id, children }) => {
 
 const Cloze = ({ onResponseChange, index, question }) => {
   const { updateFormQuestion } = useForm();
-  const [title, setTitle] = useState(
-    question.content.title || "Fill in the Blanks"
-  );
-  const [description, setDescription] = useState(
-    question.content.description ||
-      "Complete the sentence by dragging the correct words"
-  );
   const [sentence, setSentence] = useState(question.content.sentence || "");
   const [options, setOptions] = useState([]);
   const [newOption, setNewOption] = useState("");
@@ -87,8 +80,7 @@ const Cloze = ({ onResponseChange, index, question }) => {
     const questionContent = {
       type: "Cloze",
       content: {
-        title,
-        description,
+        title: question.content.title,
         image: questionImage || undefined,
         sentence: modifiedSentence,
         blanks: blankParts,
@@ -100,7 +92,7 @@ const Cloze = ({ onResponseChange, index, question }) => {
       onResponseChange(index, questionContent);
     }
     updateFormQuestion(index, questionContent);
-  }, [title, description, sentence, options, questionImage]);
+  }, [sentence, options, questionImage]);
 
   const handleQuestionImageUpload = (e) => {
     const file = e.target.files[0];
@@ -210,30 +202,8 @@ const Cloze = ({ onResponseChange, index, question }) => {
   );
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Create Cloze Test</h2>
-
-      {/* Title and Description */}
-      <div className="mb-4">
-        <label className="block mb-2 font-semibold">Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter question title"
-          className="w-full p-2 border rounded"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block mb-2 font-semibold">Description</label>
-        <input
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter question description"
-          className="w-full p-2 border rounded"
-        />
-      </div>
+    <div className="p-4 bg-white rounded-lg shadow-md">
+    <h3 className="text-lg font-semibold mb-4">{question.content.title}</h3>
 
       {/* Image Upload */}
       <div className="relative mb-4">
