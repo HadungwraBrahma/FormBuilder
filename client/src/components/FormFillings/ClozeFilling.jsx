@@ -71,7 +71,7 @@ const ClozeFilling = ({ question, response, onResponseUpdate }) => {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className="mb-6">
+      <div className="mb-6 shadow-md p-2 rounded-md">
         <h2 className="text-xl font-semibold mb-4">{question.content.title}</h2>
 
         {question.content.imageUrl && (
