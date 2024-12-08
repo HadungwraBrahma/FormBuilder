@@ -27,24 +27,16 @@ const FormEditor = () => {
       content: {
         title: `New ${type} Question`,
         ...(type === 'Categorize' && { 
-          categories: ['Category 1', 'Category 2'],
-          items: [
-            { id: 'item1', text: 'Item 1' },
-            { id: 'item2', text: 'Item 2' }
-          ]
+          categories: [],
+          items: []
         }),
         ...(type === 'Cloze' && { 
           sentence: '',
           options: []
         }),
         ...(type === 'Comprehension' && { 
-          passage: 'Enter comprehension passage...',
-          questions: [
-            {
-              question: 'Question 1',
-              options: ['Option A', 'Option B', 'Option C', 'Option D']
-            }
-          ]
+          passage: '',
+          questions: []
         })
       }
     };
