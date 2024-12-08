@@ -18,24 +18,24 @@ import { TrashIcon, GripVerticalIcon, ImageIcon } from "lucide-react";
 import { useForm } from "../../context/FormContext";
 
 const DraggableItem = ({ id, children, onDelete }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
+  const { attributes, listeners, setNodeRef, transform, transition, active } =
     useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    cursor: "grab",
+    cursor: active ? "grabbing" : "grab",
   };
 
   return (
-    <div className="flex items-center bg-blue-100 p-2 rounded mb-2">
-      <div
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
-        className="flex-grow flex items-center"
-      >
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="flex items-center bg-blue-100 p-2 rounded mb-2"
+    >
+      <div className="flex-grow flex items-center">
         <GripVerticalIcon size={16} className="mr-2 text-gray-500" />
         {children}
       </div>

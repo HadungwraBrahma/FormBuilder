@@ -18,13 +18,13 @@ import { GripVerticalIcon, TrashIcon, PlusIcon, ImageIcon } from "lucide-react";
 import { useForm } from "../../context/FormContext";
 
 const DraggableItem = ({ id, children }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
+  const { attributes, listeners, setNodeRef, transform, transition, active } =
     useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    cursor: "grab",
+    cursor: active ? "grabbing" : "grab",
   };
 
   return (

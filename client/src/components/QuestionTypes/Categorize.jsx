@@ -17,13 +17,13 @@ import { CSS } from "@dnd-kit/utilities";
 import { PlusIcon, TrashIcon, GripVerticalIcon, ImageIcon } from "lucide-react";
 
 const DraggableItem = ({ id, children, type = "item" }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
+  const { attributes, listeners, setNodeRef, transform, transition, active } =
     useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    cursor: "grab",
+    cursor: active ? "grabbing" : "grab",
   };
 
   return (
