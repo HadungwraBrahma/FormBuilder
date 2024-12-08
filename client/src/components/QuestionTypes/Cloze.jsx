@@ -1,5 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { DndContext, closestCorners } from "@dnd-kit/core";
+import {
+  DndContext,
+  PointerSensor,
+  TouchSensor,
+  closestCorners,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import {
   arrayMove,
   rectSortingStrategy,
@@ -183,6 +190,19 @@ const Cloze = ({ onResponseChange, index, question }) => {
     }
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    })
+  );
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Create Cloze Test</h2>
@@ -257,7 +277,11 @@ const Cloze = ({ onResponseChange, index, question }) => {
       </div>
 
       {/* Draggable Options */}
-      <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+      <DndContext
+        collisionDetection={closestCorners}
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+      >
         <div className="grid grid-cols-1 gap-4">
           {/* Options */}
           <div>

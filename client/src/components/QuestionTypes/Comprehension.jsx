@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { DndContext, closestCorners } from "@dnd-kit/core";
+import {
+  DndContext,
+  PointerSensor,
+  TouchSensor,
+  closestCorners,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import {
   arrayMove,
   rectSortingStrategy,
@@ -159,6 +166,19 @@ const DynamicComprehension = ({ onResponseChange, index, question }) => {
     }));
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    })
+  );
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">Create Comprehension Passage</h2>
@@ -270,7 +290,11 @@ const DynamicComprehension = ({ onResponseChange, index, question }) => {
         </div>
       </div>
 
-      <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+      <DndContext
+        collisionDetection={closestCorners}
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+      >
         <SortableContext
           items={questions.map((q) => q.id)}
           strategy={rectSortingStrategy}

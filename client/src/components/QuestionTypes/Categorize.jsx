@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { DndContext, closestCorners } from "@dnd-kit/core";
+import {
+  DndContext,
+  PointerSensor,
+  TouchSensor,
+  closestCorners,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import {
   arrayMove,
   rectSortingStrategy,
@@ -163,6 +170,19 @@ const Categorize = ({ question, onResponseChange, index }) => {
     setSelectedCategories(updatedSelectedCategories);
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    })
+  );
+
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
       <h3 className="text-lg font-semibold mb-4">{question.content.title}</h3>
@@ -227,6 +247,7 @@ const Categorize = ({ question, onResponseChange, index }) => {
           <DndContext
             collisionDetection={closestCorners}
             onDragEnd={handleDragEndCategories}
+            sensors={sensors}
           >
             <SortableContext items={categories} strategy={rectSortingStrategy}>
               {categories.map((category) => (
